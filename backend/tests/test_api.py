@@ -162,3 +162,57 @@ def test_ai_playground_generation(client):
     assert data["status"] == "success"
     assert len(data["text"]) > 10
     assert "model" in data
+
+
+def test_google_auth_config(client):
+    """Test retrieving Google OAuth client configuration."""
+    res = client.get("/api/v1/auth/google/config")
+    assert res.status_code == 200
+    data = res.json()
+    assert "client_id" in data
+    assert data["client_id"] is not None
+    assert "1049306881558" in data["client_id"]
+
+
+def test_google_auth_url(client):
+    """Test generating Google OAuth redirect URL."""
+    res = client.get("/api/v1/auth/google/url")
+    assert res.status_code == 200
+    data = res.json()
+    assert "accounts.google.com" in data["url"]
+    assert "client_id=" in data["url"]
+
+
+def test_auth_me_unauthorized(client):
+    """Test accessing /me without token returns 401."""
+    res = client.get("/api/v1/auth/me")
+    assert res.status_code == 401
+
+
+def test_auth_me_authenticated(client):
+    """Test accessing /me with valid JWT token."""
+    from app.core.security import create_access_token
+    from app.models.user import User
+
+    # Seed test user
+    db = TestingSessionLocal()
+    test_user = User(
+        id="usr-test-123",
+        google_id="google-sub-456",
+        email="hackathon.user@example.com",
+        name="Hackathon Developer",
+    )
+    db.add(test_user)
+    db.commit()
+    db.close()
+
+    token = create_access_token(data={"sub": "usr-test-123", "email": "hackathon.user@example.com"})
+
+    res = client.get(
+        "/api/v1/auth/me",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res.status_code == 200
+    user_data = res.json()
+    assert user_data["email"] == "hackathon.user@example.com"
+    assert user_data["name"] == "Hackathon Developer"

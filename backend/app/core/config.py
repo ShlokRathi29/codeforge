@@ -1,8 +1,28 @@
+import glob
+import json
 import os
 from functools import lru_cache
 from typing import List, Optional, Union
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _load_google_json_credentials() -> dict:
+    """Auto-detect client_secret_*.json in project directory if present."""
+    patterns = ["client_secret*.json", "../client_secret*.json", "backend/client_secret*.json"]
+    for pattern in patterns:
+        matches = glob.glob(pattern)
+        if matches:
+            try:
+                with open(matches[0], "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    return data.get("web", data.get("installed", {}))
+            except Exception:
+                pass
+    return {}
+
+
+_json_credentials = _load_google_json_credentials()
 
 
 class Settings(BaseSettings):
@@ -33,6 +53,13 @@ class Settings(BaseSettings):
     @property
     def effective_groq_api_key(self) -> Optional[str]:
         return self.GROQ_API_KEY or self.GROK_API_KEY
+
+    # Google OAuth
+    GOOGLE_CLIENT_ID: Optional[str] = _json_credentials.get("client_id")
+    GOOGLE_CLIENT_SECRET: Optional[str] = _json_credentials.get("client_secret")
+    GOOGLE_PROJECT_ID: Optional[str] = _json_credentials.get("project_id")
+    GOOGLE_REDIRECT_URI: str = "https://codeforge-zdxk.onrender.com/api/v1/auth/google/callback"
+    FRONTEND_URL: str = "https://codeforge-0j8e.onrender.com"
 
     # CORS Configuration
     CORS_ORIGINS: Union[str, List[str]] = ["*"]

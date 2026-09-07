@@ -5,6 +5,7 @@ from app.core.config import get_settings
 from app.database import init_db
 from app.routers import (
     ai_router,
+    auth_router,
     health_router,
     items_router,
     records_router,
@@ -57,6 +58,7 @@ app.add_middleware(
 
 # Include Routers
 app.include_router(health_router)
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["Google Authentication"])
 app.include_router(items_router, prefix="/api/v1/items", tags=["Items"])
 app.include_router(records_router, prefix="/api/v1/records", tags=["Records & Pipelines"])
 app.include_router(stats_router, prefix="/api/v1/stats", tags=["Dashboard Stats"])
