@@ -25,31 +25,16 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# Configure CORS for Render frontend and local development
-allow_all = "*" in settings.CORS_ORIGINS
-
-if allow_all:
-    # Allow all origins while also supporting credentials
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origin_regex=r"^https?://.*$",
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["*"],
-        max_age=3600,
-    )
-else:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.CORS_ORIGINS,
-        allow_origin_regex=settings.CORS_ORIGIN_REGEX,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["*"],
-        max_age=3600,
-    )
+# Universal CORS for hackathon API - allows any origin, header, and method
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=86400,
+)
 
 # Include Routers
 app.include_router(health_router)

@@ -1,8 +1,9 @@
 import axios from 'axios'
 import type { ActivityRecord, StatItem } from '../types'
 
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'https://codeforge-zdxk.onrender.com'
+export const API_BASE_URL = import.meta.env.DEV
+  ? ''
+  : (import.meta.env.VITE_API_URL || 'https://codeforge-zdxk.onrender.com')
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
