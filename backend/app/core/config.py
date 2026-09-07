@@ -28,13 +28,14 @@ class Settings(BaseSettings):
     # CORS Configuration
     # Comma-separated list of origins or list of strings
     CORS_ORIGINS: Union[str, List[str]] = [
+        "https://codeforge-0j8e.onrender.com",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ]
     # Regex to automatically permit any frontend hosted on Render or localhost
-    CORS_ORIGIN_REGEX: str = r"^(https:\/\/.*\.onrender\.com|http:\/\/localhost(:\d+)?|http:\/\/127\.0\.0\.1(:\d+)?)$"
+    CORS_ORIGIN_REGEX: str = r"^(https?:\/\/.*\.onrender\.com|http:\/\/localhost(:\d+)?|http:\/\/127\.0\.0\.1(:\d+)?)$"
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod

@@ -36,6 +36,8 @@ if allow_all:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["*"],
+        max_age=3600,
     )
 else:
     app.add_middleware(
@@ -45,6 +47,8 @@ else:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["*"],
+        max_age=3600,
     )
 
 # Include Routers
