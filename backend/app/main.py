@@ -46,6 +46,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
+    max_age=0,  # Prevent browsers from caching stale preflights during hackathon iterations
 )
 
 # Include Routers
