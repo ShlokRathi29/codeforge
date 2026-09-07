@@ -160,4 +160,5 @@ def test_ai_playground_generation(client):
     assert res.status_code == 200
     data = res.json()
     assert data["status"] == "success"
-    assert "Optimal execution" in data["text"]
+    assert len(data["text"]) > 10
+    assert "model" in data

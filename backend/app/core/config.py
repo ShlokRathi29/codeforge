@@ -1,6 +1,6 @@
 import os
 from functools import lru_cache
-from typing import List, Union
+from typing import List, Optional, Union
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -25,10 +25,17 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "sqlite:///./hackathon.db"
 
+    # AI Provider Keys & Model Settings
+    GROQ_API_KEY: Optional[str] = None
+    GROK_API_KEY: Optional[str] = None
+    GROQ_MODEL: str = "openai/gpt-oss-120b"
+
+    @property
+    def effective_groq_api_key(self) -> Optional[str]:
+        return self.GROQ_API_KEY or self.GROK_API_KEY
+
     # CORS Configuration
-    # Comma-separated list of origins or list of strings
     CORS_ORIGINS: Union[str, List[str]] = ["*"]
-    # Regex to automatically permit any frontend hosted on Render or localhost
     CORS_ORIGIN_REGEX: str = r"^(https?:\/\/.*\.onrender\.com|http:\/\/localhost(:\d+)?|http:\/\/127\.0\.0\.1(:\d+)?)$"
 
     @field_validator("CORS_ORIGINS", mode="before")
