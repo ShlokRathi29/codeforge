@@ -74,58 +74,90 @@ def test_cors_preflight_localhost(client):
 def test_cors_preflight_render_domain(client):
     """Test CORS preflight for Render-hosted frontend."""
     response = client.options(
-        "/api/v1/items",
+        "/api/v1/records",
         headers={
-            "Origin": "https://my-awesome-frontend.onrender.com",
+            "Origin": "https://codeforge-0j8e.onrender.com",
             "Access-Control-Request-Method": "POST",
             "Access-Control-Request-Headers": "content-type",
         },
     )
     assert response.status_code == 200
-    assert response.headers.get("access-control-allow-origin") == "https://my-awesome-frontend.onrender.com"
+    assert response.headers.get("access-control-allow-origin") == "https://codeforge-0j8e.onrender.com"
 
 
-def test_crud_items(client):
-    """Test REST API CRUD functionality for items."""
-    # 1. Create item
-    create_payload = {
-        "title": "Hackathon Demo Item",
-        "description": "Building a fullstack project with FastAPI and React",
-        "is_completed": False,
-    }
-    res = client.post("/api/v1/items", json=create_payload)
+def test_records_crud(client):
+    """Test pipeline activity records endpoints."""
+    # 1. Create record
+    res = client.post(
+        "/api/v1/records",
+        json={
+            "title": "Quantum RAG Embedder",
+            "category": "AI / ML",
+            "status": "in_progress",
+            "author": "Hackathon Lead",
+            "details": "Fine-tuning vector projections",
+        },
+    )
     assert res.status_code == 201
-    item = res.json()
-    assert item["title"] == create_payload["title"]
-    assert item["description"] == create_payload["description"]
-    assert item["is_completed"] is False
-    assert "id" in item
-    item_id = item["id"]
+    record = res.json()
+    assert record["title"] == "Quantum RAG Embedder"
+    rec_id = record["id"]
 
-    # 2. List items
-    res = client.get("/api/v1/items")
+    # 2. List records with category filter
+    res = client.get("/api/v1/records?category=AI%20/%20ML")
     assert res.status_code == 200
-    items = res.json()
-    assert len(items) == 1
-    assert items[0]["id"] == item_id
+    records = res.json()
+    assert any(r["id"] == rec_id for r in records)
 
-    # 3. Get item by ID
-    res = client.get(f"/api/v1/items/{item_id}")
+    # 3. Update record
+    res = client.put(f"/api/v1/records/{rec_id}", json={"status": "completed"})
     assert res.status_code == 200
-    assert res.json()["title"] == create_payload["title"]
+    assert res.json()["status"] == "completed"
 
-    # 4. Update item
-    update_payload = {"is_completed": True, "title": "Updated Hackathon Demo Item"}
-    res = client.put(f"/api/v1/items/{item_id}", json=update_payload)
+    # 4. Get record
+    res = client.get(f"/api/v1/records/{rec_id}")
     assert res.status_code == 200
-    updated_item = res.json()
-    assert updated_item["is_completed"] is True
-    assert updated_item["title"] == "Updated Hackathon Demo Item"
+    assert res.json()["id"] == rec_id
 
-    # 5. Delete item
-    res = client.delete(f"/api/v1/items/{item_id}")
+    # 5. Delete record
+    res = client.delete(f"/api/v1/records/{rec_id}")
     assert res.status_code == 200
 
-    # 6. Verify 404 after deletion
-    res = client.get(f"/api/v1/items/{item_id}")
+    # 6. Verify 404
+    res = client.get(f"/api/v1/records/{rec_id}")
     assert res.status_code == 404
+
+
+def test_dashboard_stats(client):
+    """Test dynamic KPI stats calculation."""
+    # Seed a record
+    client.post(
+        "/api/v1/records",
+        json={
+            "title": "Benchmark Test Run",
+            "category": "Database",
+            "status": "completed",
+            "author": "Tester",
+        },
+    )
+    res = client.get("/api/v1/stats")
+    assert res.status_code == 200
+    data = res.json()
+    assert "stats" in data
+    assert len(data["stats"]) == 4
+    assert data["total_records"] >= 1
+
+
+def test_ai_playground_generation(client):
+    """Test AI playground generation endpoint."""
+    res = client.post(
+        "/api/v1/ai/generate",
+        json={
+            "prompt": "Evaluate code scalability for high throughput",
+            "temperature": 0.8,
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "success"
+    assert "Optimal execution" in data["text"]

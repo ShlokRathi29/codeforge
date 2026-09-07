@@ -7,10 +7,12 @@ A clean, production-ready, and lightweight REST API built with **FastAPI**, **SQ
 ## 🚀 Features
 
 - **Fast & Modern**: Built on FastAPI with async support and automatic OpenAPI documentation.
-- **Hackathon-Ready SQLite**: Pre-configured SQLAlchemy with automatic table initialization on startup.
-- **Render-Optimized CORS**: Ready out-of-the-box for frontends hosted on Render (`*.onrender.com`) and local development (`localhost:5173`, `localhost:3000`).
-- **Health Check**: Dedicated `GET /health` endpoint returning `{"status":"ok"}` for uptime monitors and deployment checks.
-- **Environment Driven**: 12-factor configuration with Pydantic Settings and `.env` support.
+- **Data & Records Hub API**: Persistent SQLite endpoints for tracking pipeline tasks, categories, statuses, and logs.
+- **Live KPI Stats**: Auto-computed metrics for dashboard overview (active jobs, accuracy, task throughput).
+- **AI Playground Inference**: Structured AI prompt evaluation endpoint ready for live model integration.
+- **Hackathon Demo Seeding**: Auto-populates realistic pipeline records on startup if the database is empty.
+- **Render-Optimized CORS**: Ready out-of-the-box for frontends hosted on Render (`https://codeforge-0j8e.onrender.com`), preview domains (`*.onrender.com`), and local development.
+- **Health Check**: Dedicated `GET /health` endpoint returning `{"status":"ok"}`.
 - **Package Management with `uv`**: Ultra-fast virtual environment and dependency management.
 
 ---
@@ -22,21 +24,28 @@ backend/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py             # FastAPI app, lifespan setup, and CORS configuration
-│   ├── database.py         # SQLAlchemy SQLite engine, session, and init_db()
+│   ├── database.py         # SQLAlchemy SQLite engine, session, and seed_initial_data()
 │   ├── core/
 │   │   ├── __init__.py
 │   │   └── config.py       # Pydantic Settings loaded from .env
 │   ├── models/
 │   │   ├── __init__.py
-│   │   └── item.py         # SQLAlchemy ORM database models
+│   │   ├── item.py         # Basic item model
+│   │   └── record.py       # Pipeline ActivityRecord database model
 │   ├── schemas/
 │   │   ├── __init__.py
 │   │   ├── health.py       # Health check response schema
-│   │   └── item.py         # Request and response schemas for REST API
+│   │   ├── item.py         # Item request/response schemas
+│   │   ├── record.py       # ActivityRecord CRUD schemas
+│   │   ├── stats.py        # Dashboard stats schemas
+│   │   └── ai.py           # AI generation schemas
 │   └── routers/
 │       ├── __init__.py
 │       ├── health.py       # GET /health
-│       └── items.py        # REST CRUD endpoints for /api/v1/items
+│       ├── records.py      # CRUD for /api/v1/records
+│       ├── stats.py        # GET /api/v1/stats
+│       ├── ai.py           # POST /api/v1/ai/generate
+│       └── items.py        # CRUD for /api/v1/items
 ├── tests/
 │   └── test_api.py         # Automated pytest test suite
 ├── .env.example            # Sample environment variables
@@ -56,11 +65,15 @@ backend/
 | `GET` | `/` | API status & discovery links |
 | `GET` | `/docs` | Interactive Swagger API documentation |
 | `GET` | `/redoc` | Interactive ReDoc API documentation |
-| `GET` | `/api/v1/items` | List items (supports `search`, `is_completed`, `skip`, `limit`) |
-| `POST` | `/api/v1/items` | Create a new item |
-| `GET` | `/api/v1/items/{id}` | Get item by ID |
-| `PUT` | `/api/v1/items/{id}` | Update item by ID |
-| `DELETE` | `/api/v1/items/{id}` | Delete item by ID |
+| `GET` | `/api/v1/records` | List pipeline activity records (supports `category`, `status`, `search`) |
+| `POST` | `/api/v1/records` | Create a new pipeline activity record |
+| `GET` | `/api/v1/records/{id}` | Get record details by ID |
+| `PUT` | `/api/v1/records/{id}` | Update record status, details, or metadata |
+| `DELETE` | `/api/v1/records/{id}` | Delete record by ID |
+| `GET` | `/api/v1/stats` | Live KPI dashboard metrics calculated from database |
+| `POST` | `/api/v1/ai/generate` | AI playground inference engine |
+| `GET` | `/api/v1/items` | Item list endpoint |
+| `POST` | `/api/v1/items` | Item create endpoint |
 
 ---
 
@@ -68,43 +81,30 @@ backend/
 
 ### Prerequisites
 
-Install `uv` (if not already installed):
+Install `uv`:
 ```bash
-# On Linux / macOS:
 curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# On Windows (PowerShell):
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### 1. Clone & Navigate to Backend
+### 1. Install Dependencies
 ```bash
 cd backend
-```
-
-### 2. Set Up Environment Variables
-```bash
 cp .env.example .env
-```
-
-### 3. Install Dependencies
-Using `uv`:
-```bash
 uv sync
 ```
 
-### 4. Run the Development Server
+### 2. Run the Development Server
 ```bash
-# Option A: Standard local runner with auto-reload
+# Option A: Local runner with hot reload
 uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
-# Option B: Run using the exact Render command format:
+# Option B: Run using Render command format
 PORT=8000 uv run uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
 
-Visit the interactive API docs at [http://localhost:8000/docs](http://localhost:8000/docs) and health check at [http://localhost:8000/health](http://localhost:8000/health).
+Visit the interactive API docs at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-### 5. Run Tests
+### 3. Run Tests
 ```bash
 uv run pytest -v
 ```
@@ -113,61 +113,8 @@ uv run pytest -v
 
 ## 🌐 Deploying to Render
 
-Deploying this backend to [Render](https://render.com) takes less than 2 minutes.
-
-### Step 1: Create a New Web Service on Render
-1. Log in to [Render Dashboard](https://dashboard.render.com).
-2. Click **New +** > **Web Service**.
-3. Connect your Git repository (e.g. `codeforge`).
-
-### Step 2: Configure Service Settings
-Fill in the following fields:
-
-- **Name**: `codeforge-backend` (or your choice)
-- **Region**: Choose the region closest to you or your frontend
-- **Branch**: `main`
-- **Root Directory**: `backend`
-- **Runtime**: `Python`
-
-### Step 3: Build & Start Commands
-
-- **Build Command**:
-  ```bash
-  pip install -r requirements.txt
-  ```
-  *(Or if you prefer `uv` on Render: `curl -LsSf https://astral.sh/uv/install.sh | sh && uv pip install -r requirements.txt`)*
-
-- **Start Command**:
-  ```bash
-  uvicorn app.main:app --host 0.0.0.0 --port $PORT
-  ```
-
-### Step 4: Environment Variables on Render
-Under **Environment Variables**, add:
-
-| Key | Value | Description |
-| :--- | :--- | :--- |
-| `ENVIRONMENT` | `production` | Set environment mode |
-| `DEBUG` | `False` | Disable debug mode in production |
-| `SECRET_KEY` | *(generate a random string)* | Secret key for auth/sessions |
-| `DATABASE_URL` | `sqlite:///./hackathon.db` | Default SQLite storage file |
-| `CORS_ORIGINS` | `https://<your-frontend>.onrender.com` | Your Render frontend URL |
-
-> [!NOTE]
-> Render automatically sets the `$PORT` environment variable (e.g., `10000`). The start command automatically uses this port.
-> In addition, any frontend hosted on `*.onrender.com` is automatically allowed by the backend's CORS configuration regex, avoiding CORS blocking during quick hackathon iterations!
-
-### Step 5: Health Check
-In Render's **Advanced Settings**:
-- **Health Check Path**: `/health`
-
-Click **Create Web Service**. Once deployed, Render will verify `/health` and display **Live**!
-
----
-
-## 🔒 CORS Configuration
-
-CORS is pre-configured to allow:
-1. `localhost:5173`, `localhost:3000`, `127.0.0.1:5173`, `127.0.0.1:3000` for local dev.
-2. Any frontend URL matching `https://*.onrender.com`.
-3. Custom origins specified in `CORS_ORIGINS` (comma-separated list, or `*` to allow all).
+1. Connect repository on [Render](https://dashboard.render.com).
+2. Set **Root Directory**: `backend`
+3. Set **Build Command**: `pip install -r requirements.txt` *(or `curl -LsSf https://astral.sh/uv/install.sh | sh && uv pip install -r requirements.txt`)*
+4. Set **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+5. Set **Health Check Path**: `/health`

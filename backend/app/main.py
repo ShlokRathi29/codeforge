@@ -3,7 +3,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.database import init_db
-from app.routers import health_router, items_router
+from app.routers import (
+    ai_router,
+    health_router,
+    items_router,
+    records_router,
+    stats_router,
+)
 
 settings = get_settings()
 
@@ -46,12 +52,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
-    max_age=0,  # Prevent browsers from caching stale preflights during hackathon iterations
+    max_age=0,
 )
 
 # Include Routers
 app.include_router(health_router)
 app.include_router(items_router, prefix="/api/v1/items", tags=["Items"])
+app.include_router(records_router, prefix="/api/v1/records", tags=["Records & Pipelines"])
+app.include_router(stats_router, prefix="/api/v1/stats", tags=["Dashboard Stats"])
+app.include_router(ai_router, prefix="/api/v1/ai", tags=["AI & Playground"])
 
 
 @app.get("/", tags=["Root"])
