@@ -9,7 +9,7 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  timeout: 60000,
 })
 
 export interface BackendItem {
@@ -21,10 +21,18 @@ export interface BackendItem {
   updated_at: string
 }
 
-// Live Backend API Methods
-export async function getHealthStatus(): Promise<{ status: string }> {
-  const res = await api.get<{ status: string }>('/health')
-  return res.data
+// Live Backend API Methods with graceful retry for Render cold starts
+export async function getHealthStatus(retries = 2): Promise<{ status: string }> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await api.get<{ status: string }>('/health')
+      return res.data
+    } catch (err) {
+      if (attempt === retries) throw err
+      await new Promise((r) => setTimeout(r, 2000))
+    }
+  }
+  return { status: 'error' }
 }
 
 export async function getItems(): Promise<BackendItem[]> {
