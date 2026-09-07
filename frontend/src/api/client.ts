@@ -1,21 +1,56 @@
 import axios from 'axios'
 import type { ActivityRecord, StatItem } from '../types'
 
-export const USE_MOCK_API = true
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL || 'https://codeforge-zdxk.onrender.com'
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 15000,
 })
+
+export interface BackendItem {
+  id: number
+  title: string
+  description?: string | null
+  is_completed: boolean
+  created_at: string
+  updated_at: string
+}
+
+// Live Backend API Methods
+export async function getHealthStatus(): Promise<{ status: string }> {
+  const res = await api.get<{ status: string }>('/health')
+  return res.data
+}
+
+export async function getItems(): Promise<BackendItem[]> {
+  const res = await api.get<BackendItem[]>('/api/v1/items')
+  return res.data
+}
+
+export async function createItem(payload: {
+  title: string
+  description?: string
+  is_completed?: boolean
+}): Promise<BackendItem> {
+  const res = await api.post<BackendItem>('/api/v1/items', payload)
+  return res.data
+}
+
+export async function deleteItem(itemId: number): Promise<{ message: string }> {
+  const res = await api.delete<{ message: string }>(`/api/v1/items/${itemId}`)
+  return res.data
+}
 
 // Mock fallback dataset for instant hackathon pitching
 export const mockStats: StatItem[] = [
   { id: '1', label: 'Active Projects', value: '12', change: '+24%', trend: 'up' },
   { id: '2', label: 'Tasks Processed', value: '1,429', change: '+18%', trend: 'up' },
-  { id: '3', label: 'Response Latency', value: '42ms', change: '-8ms', trend: 'up' },
+  { id: '3', label: 'Render Latency', value: '84ms', change: '-12ms', trend: 'up' },
   { id: '4', label: 'Accuracy Score', value: '99.4%', change: '+0.6%', trend: 'up' },
 ]
 

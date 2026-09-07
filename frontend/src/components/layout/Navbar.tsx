@@ -1,7 +1,7 @@
-import React from 'react'
-import { Search, Bell, Plus, ShieldCheck } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Search, Bell, Plus, Globe } from 'lucide-react'
 import { Button } from '../ui/Button'
-import { USE_MOCK_API } from '../../api/client'
+import { getHealthStatus, API_BASE_URL } from '../../api/client'
 
 interface NavbarProps {
   onOpenNewAction?: () => void
@@ -14,6 +14,22 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchQuery,
   setSearchQuery,
 }) => {
+  const [isBackendOnline, setIsBackendOnline] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    let mounted = true
+    getHealthStatus()
+      .then((res) => {
+        if (mounted && res.status === 'ok') setIsBackendOnline(true)
+      })
+      .catch(() => {
+        if (mounted) setIsBackendOnline(false)
+      })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
   return (
     <header className="h-16 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30 px-6 flex items-center justify-between">
       {/* Search Bar */}
@@ -32,18 +48,24 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Right Actions */}
       <div className="flex items-center gap-3">
-        {/* Mock API Badge */}
-        {USE_MOCK_API && (
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-indigo-950/50 border border-indigo-500/30 rounded-full text-indigo-300 text-xs font-mono">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-            Mock API Active
-          </div>
-        )}
-
-        <div className="hidden sm:flex items-center gap-1 text-slate-400 hover:text-slate-200 p-2 rounded-lg hover:bg-slate-800/50 transition cursor-pointer">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs font-medium text-slate-300">Ready</span>
-        </div>
+        {/* Render Live Backend Badge */}
+        <a
+          href={`${API_BASE_URL}/docs`}
+          target="_blank"
+          rel="noreferrer"
+          title={`Backend API: ${API_BASE_URL}`}
+          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/50 border border-emerald-500/30 rounded-full text-emerald-300 text-xs font-mono hover:bg-emerald-900/40 transition"
+        >
+          <Globe className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>
+            {isBackendOnline === true
+              ? 'Render: Online'
+              : isBackendOnline === false
+              ? 'Render: Offline'
+              : 'Render: Checking...'}
+          </span>
+        </a>
 
         <button className="p-2 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-slate-800/50 transition relative">
           <Bell className="w-4 h-4" />

@@ -1,24 +1,38 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import { Server, Key, CheckCircle, RefreshCw, AlertCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '../ui/Card'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
-import { USE_MOCK_API } from '../../api/client'
+import { API_BASE_URL } from '../../api/client'
 
 export const SettingsView: React.FC = () => {
-  const [backendUrl, setBackendUrl] = useState('http://localhost:8000')
+  const [backendUrl, setBackendUrl] = useState(API_BASE_URL)
   const [apiKey, setApiKey] = useState('demo-hackathon-token-xyz')
   const [isTesting, setIsTesting] = useState(false)
   const [testResult, setTestResult] = useState<'success' | 'fail' | null>(null)
+  const [latency, setLatency] = useState<number | null>(null)
 
-  const handleTestConnection = () => {
+  const handleTestConnection = async () => {
     setIsTesting(true)
     setTestResult(null)
+    setLatency(null)
 
-    setTimeout(() => {
+    const start = performance.now()
+    try {
+      const res = await axios.get(`${backendUrl}/health`, { timeout: 10000 })
+      const elapsed = Math.round(performance.now() - start)
+      if (res.data?.status === 'ok') {
+        setTestResult('success')
+        setLatency(elapsed)
+      } else {
+        setTestResult('fail')
+      }
+    } catch {
+      setTestResult('fail')
+    } finally {
       setIsTesting(false)
-      setTestResult('success')
-    }, 800)
+    }
   }
 
   return (
@@ -43,15 +57,20 @@ export const SettingsView: React.FC = () => {
             label="Backend REST Base URL"
             value={backendUrl}
             onChange={(e) => setBackendUrl(e.target.value)}
-            helperText="Points to your Python/FastAPI/Node server during local demo"
+            helperText="Currently pointing to hosted backend on Render"
           />
 
-          <Input
-            label="Mock Fallback Engine"
-            disabled
-            value={USE_MOCK_API ? 'ENABLED (Safe Mode for Hackathon Demo)' : 'DISABLED'}
-            helperText="When enabled, any missing backend routes gracefully fall back to local mock data"
-          />
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs flex items-center justify-between">
+            <span className="text-slate-400">Documentation Swagger</span>
+            <a
+              href={`${backendUrl}/docs`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-400 hover:text-indigo-300 font-mono underline"
+            >
+              {backendUrl}/docs
+            </a>
+          </div>
 
           <div className="flex items-center gap-3 pt-2">
             <Button
@@ -66,6 +85,7 @@ export const SettingsView: React.FC = () => {
             {testResult === 'success' && (
               <span className="text-xs text-emerald-400 flex items-center gap-1.5 font-medium">
                 <CheckCircle className="w-4 h-4" /> 200 OK Handshake established
+                {latency && <span className="text-slate-400 font-mono">({latency}ms)</span>}
               </span>
             )}
             {testResult === 'fail' && (

@@ -152,9 +152,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onQuickAction }) =
               <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">
                 Backend Status
               </span>
-              <p className="text-xs text-emerald-400 mt-1 flex items-center gap-1.5">
+              <p className="text-xs text-emerald-400 mt-1 flex items-center gap-1.5 font-medium">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                Backend Port :8000 Ready
+                Render Cloud: Live (codeforge-zdxk)
               </p>
             </div>
           </Card>
