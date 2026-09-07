@@ -5,11 +5,11 @@ export const API_BASE_URL = import.meta.env.DEV
   ? ''
   : (import.meta.env.VITE_API_URL || 'https://codeforge-zdxk.onrender.com')
 
+console.log('[CodeForge API] VITE_API_URL =', import.meta.env.VITE_API_URL)
+console.log('[CodeForge API] Resolved API_BASE_URL =', API_BASE_URL)
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
   timeout: 60000,
 })
 
@@ -24,11 +24,17 @@ export interface BackendItem {
 
 // Live Backend API Methods with graceful retry for Render cold starts
 export async function getHealthStatus(retries = 2): Promise<{ status: string }> {
+  const url = `${API_BASE_URL}/health`
+  console.log('[CodeForge API] Health checking URL:', url)
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await api.get<{ status: string }>('/health')
-      return res.data
+      const res = await fetch(url)
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`)
+      const data = await res.json()
+      console.log('[CodeForge API] Backend health check response:', data)
+      return data
     } catch (err) {
+      console.warn(`[CodeForge API] Health attempt ${attempt + 1} failed:`, err)
       if (attempt === retries) throw err
       await new Promise((r) => setTimeout(r, 2000))
     }

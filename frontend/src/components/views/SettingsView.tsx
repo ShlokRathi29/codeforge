@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 import { Server, Key, CheckCircle, RefreshCw, AlertCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '../ui/Card'
 import { Button } from '../ui/Button'
@@ -20,15 +19,19 @@ export const SettingsView: React.FC = () => {
 
     const start = performance.now()
     try {
-      const res = await axios.get(`${backendUrl}/health`, { timeout: 10000 })
+      const res = await fetch(`${backendUrl}/health`)
       const elapsed = Math.round(performance.now() - start)
-      if (res.data?.status === 'ok') {
-        setTestResult('success')
-        setLatency(elapsed)
-      } else {
-        setTestResult('fail')
+      if (res.ok) {
+        const data = await res.json()
+        if (data?.status === 'ok') {
+          setTestResult('success')
+          setLatency(elapsed)
+          return
+        }
       }
-    } catch {
+      setTestResult('fail')
+    } catch (err) {
+      console.error('[SettingsView] Handshake failed:', err)
       setTestResult('fail')
     } finally {
       setIsTesting(false)
