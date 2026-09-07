@@ -11,7 +11,6 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan context for startup and shutdown events."""
-    # Ensure database tables exist
     init_db()
     yield
 
@@ -25,15 +24,28 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# Universal CORS for hackathon API - allows any origin, header, and method
+# Explicit allowed origins including Render frontend and local development
+allowed_origins = [
+    "https://codeforge-0j8e.onrender.com",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+# Merge any extra origins from settings
+for o in settings.CORS_ORIGINS:
+    if o not in allowed_origins and o != "*":
+        allowed_origins.append(o)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"^(https?:\/\/.*\.onrender\.com|http:\/\/localhost(:\d+)?|http:\/\/127\.0\.0\.1(:\d+)?)$",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
-    max_age=86400,
 )
 
 # Include Routers

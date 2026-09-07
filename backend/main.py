@@ -1,5 +1,8 @@
 import os
 import uvicorn
+from app.main import app
+
+__all__ = ["app"]
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "8000"))
