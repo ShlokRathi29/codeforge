@@ -45,14 +45,23 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "sqlite:///./hackathon.db"
 
-    # AI Provider Keys & Model Settings
+    # AI Provider Keys & Model Settings (Multi-LLM System)
     GROQ_API_KEY: Optional[str] = None
     GROK_API_KEY: Optional[str] = None
     GROQ_MODEL: str = "openai/gpt-oss-120b"
 
+    SARVAM_API_KEY: Optional[str] = None
+    SARVAM_MODEL: str = "sarvam-105b-conversations"
+
+    DEFAULT_LLM_PROVIDER: str = "auto"
+
     @property
     def effective_groq_api_key(self) -> Optional[str]:
         return self.GROQ_API_KEY or self.GROK_API_KEY
+
+    @property
+    def effective_sarvam_api_key(self) -> Optional[str]:
+        return self.SARVAM_API_KEY
 
     # Google OAuth
     GOOGLE_CLIENT_ID: Optional[str] = _json_credentials.get("client_id")

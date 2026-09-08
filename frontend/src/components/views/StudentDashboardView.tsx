@@ -9,12 +9,13 @@ import {
   Heart,
   ChevronRight,
   ShieldCheck,
-  PhoneCall,
   Sparkles,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '../ui/Card'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
+import { AIStudentCompanionModal } from '../ui/AIStudentCompanionModal'
+import { Mascot, PrivacyPill } from '../ui/Mascot'
 import { getDashboardSummary, getDashboardTrends } from '../../api/client'
 import type { DashboardSummary, DashboardTrends, NavSection } from '../../types'
 
@@ -27,6 +28,7 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ onNa
   const [trends, setTrends] = useState<DashboardTrends | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showHelplineModal, setShowHelplineModal] = useState(false)
+  const [showAIModal, setShowAIModal] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -65,40 +67,53 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ onNa
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Top Welcome Banner & CTA */}
-      <div className="relative overflow-hidden rounded-2xl border border-[#BFEAFF] bg-gradient-to-r from-[#DFF4FF] via-[#BFEAFF]/40 to-white p-6 sm:p-8">
+      {/* Top Welcome Banner & CTA with Pingu Mascot */}
+      <div className="relative overflow-hidden rounded-3xl border border-[#BFEAFF] bg-[#cdeeff] p-6 sm:p-8 lg:p-10 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[#BFEAFF] text-[#111111] text-xs font-semibold mb-3">
+          <div className="max-w-xl">
+            <PrivacyPill />
+            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[#BFEAFF] text-[#111111] text-xs font-semibold">
               <Sparkles className="w-3.5 h-3.5 text-[#111111]" />
-              <span>Daily Wellbeing Check-in</span>
+              <span>A Kinder Check-in</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#111111] tracking-tight">
-              Good morning, {summary?.student_name || 'Atharva'} 👋
+            <h1 className="mt-2 text-2xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
+              Hey {summary?.student_name || 'Atharva'}, how are you really doing?
             </h1>
-            <p className="mt-1.5 text-sm text-slate-700 max-w-xl">
-              Track how your mood and stress change over the week. Building daily self-awareness
-              helps catch exam burnout before it builds up.
+            <p className="mt-2 text-xs sm:text-sm text-slate-700 leading-relaxed max-w-lg">
+              A few honest seconds can help you notice patterns, protect your energy, and find the support you deserve.
             </p>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Button
+                size="lg"
+                variant="primary"
+                onClick={() => onNavigate('checkin')}
+                leftIcon={<Heart className="w-4 h-4 text-[#111111]" />}
+              >
+                {summary?.today_status.completed ? 'Update Today’s Check-in' : 'Start Today’s Check-in'}
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => onNavigate('insights')}
+                className="bg-white border-[#8ED8FF] hover:bg-[#DFF4FF] text-[#111111]"
+              >
+                View My Insights
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => setShowAIModal(true)}
+                className="bg-white border-[#8ED8FF] hover:bg-[#DFF4FF] text-[#111111]"
+                leftIcon={<Sparkles className="w-4 h-4 text-[#111111]" />}
+              >
+                AI Companion
+              </Button>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <Button
-              size="lg"
-              variant="primary"
-              onClick={() => onNavigate('checkin')}
-              leftIcon={<Heart className="w-4 h-4 text-[#111111]" />}
-            >
-              {summary?.today_status.completed ? 'Update Today’s Check-in' : 'Log Today’s Check-in'}
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => setShowHelplineModal(true)}
-              leftIcon={<PhoneCall className="w-4 h-4 text-emerald-700" />}
-            >
-              Campus Support
-            </Button>
+          <div className="hidden lg:block w-64 h-64 shrink-0 relative -mr-4">
+            <Mascot mode="welcome" className="h-full w-full" />
           </div>
         </div>
       </div>
@@ -321,6 +336,14 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ onNa
           </div>
         </div>
       )}
+
+      {/* AI Wellbeing Companion Modal (Groq RAG) */}
+      <AIStudentCompanionModal
+        isOpen={showAIModal}
+        onClose={() => setShowAIModal(false)}
+        studentName={summary?.student_name}
+        recentContext={summary?.today_status}
+      />
     </div>
   )
 }

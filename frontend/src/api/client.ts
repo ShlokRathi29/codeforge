@@ -121,7 +121,10 @@ export async function submitDailyCheckin(payload: {
   mood: string
   stress_level: number
   sleep_quality?: number
+  nutrition?: number
+  physical_activity?: number
   academic_pressure?: number
+  social_interaction?: number
   private_note?: string
 }): Promise<CheckIn> {
   const res = await api.post<CheckIn>('/api/v1/checkins', payload)
@@ -191,5 +194,105 @@ export async function updateStaffSignalStatus(signalId: number, status: string):
 // 6. Reset & Seed Demo Data
 export async function seedDemoData(): Promise<{ message: string }> {
   const res = await api.post<{ message: string }>('/api/v1/seed')
+  return res.data
+}
+
+// 7. Multi-LLM RAG System (Groq Cloud + Sarvam AI)
+export type LLMProviderChoice = 'auto' | 'groq' | 'sarvam'
+
+export interface RAGReference {
+  title: string
+  category: string
+  source: string
+}
+
+export interface RAGQueryResponse {
+  answer: string
+  model: string
+  provider: string
+  latency_ms?: number
+  references: RAGReference[]
+  status: string
+}
+
+export interface CounselorSuggestionResponse {
+  suggestion: string
+  model: string
+  provider: string
+  status: string
+}
+
+export interface ProviderDetail {
+  name: string
+  configured: boolean
+  model: string
+  type: string
+}
+
+export interface AIStatusResponse {
+  configured: boolean
+  provider: string
+  active_strategy: string
+  model?: string
+  knowledge_base_count: number
+  categories: string[]
+  providers?: Record<string, ProviderDetail>
+}
+
+export interface ProviderTestResult {
+  status: 'ok' | 'error' | 'unconfigured'
+  provider: string
+  model?: string
+  latency_ms?: number
+  error?: string
+}
+
+export async function askStudentRAG(
+  query: string,
+  studentName = 'Student',
+  recentContext?: any,
+  provider: LLMProviderChoice = 'auto'
+): Promise<RAGQueryResponse> {
+  const res = await api.post<RAGQueryResponse>('/api/v1/ai/rag/query', {
+    query,
+    student_name: studentName,
+    recent_context: recentContext,
+    provider,
+  })
+  return res.data
+}
+
+export async function getCounselorOutreachSuggestion(
+  studentName: string,
+  streakDays = 3,
+  stressLevel = 5,
+  affectedDates = 'recent days',
+  provider: LLMProviderChoice = 'auto'
+): Promise<CounselorSuggestionResponse> {
+  const res = await api.post<CounselorSuggestionResponse>('/api/v1/ai/counselor-suggestion', {
+    student_name: studentName,
+    streak_days: streakDays,
+    stress_level: stressLevel,
+    affected_dates: affectedDates,
+    provider,
+  })
+  return res.data
+}
+
+export async function getAIStatus(): Promise<AIStatusResponse> {
+  const res = await api.get<AIStatusResponse>('/api/v1/ai/status')
+  return res.data
+}
+
+export async function testAIConnection(provider: LLMProviderChoice = 'auto'): Promise<{
+  status: string
+  provider?: string
+  details?: ProviderTestResult
+  providers?: Record<string, ProviderTestResult>
+  active_strategy?: string
+}> {
+  const res = await api.post('/api/v1/ai/test', null, {
+    params: provider !== 'auto' ? { provider } : undefined,
+  })
   return res.data
 }

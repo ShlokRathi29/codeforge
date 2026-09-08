@@ -55,38 +55,46 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   }
 
+  const isStudent = currentRole === 'student'
+  const displayName =
+    currentUser && currentUser.role === currentRole
+      ? currentUser.name
+      : isStudent
+      ? 'Atharva Dev'
+      : 'Dr. Radhika Sharma'
+
   return (
     <header className="h-16 border-b border-[#BFEAFF]/60 bg-white/90 backdrop-blur-md sticky top-0 z-30 px-6 flex items-center justify-between">
       {/* Active Role Indicator */}
       <div className="flex items-center gap-3">
         <div
-          className={`flex items-center gap-2 px-3 py-1 rounded-xl text-xs font-semibold border transition ${
-            currentRole === 'student'
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+            isStudent
               ? 'bg-[#DFF4FF] border-[#BFEAFF] text-[#111111]'
               : 'bg-[#FFF4D9] border-[#FFD84D]/60 text-[#111111]'
           }`}
         >
-          {currentRole === 'student' ? (
+          {isStudent ? (
             <>
               <GraduationCap className="w-4 h-4 text-[#111111]" />
-              <span>Student View: {currentUser?.name || 'Atharva Dev'}</span>
+              <span>Student Portal • {displayName}</span>
             </>
           ) : (
             <>
               <Lock className="w-3.5 h-3.5 text-amber-700" />
-              <span>Counselor Portal: {currentUser?.name || 'Dr. Aris Thorne'}</span>
+              <span>Counselor Command Center • {displayName}</span>
             </>
           )}
         </div>
 
-        {/* Quick Demo Role Switcher for Hackathon Judges */}
+        {/* Quick Demo Role Switcher */}
         <Button
           size="sm"
           variant="outline"
           onClick={onToggleRole}
           leftIcon={<Users className="w-3.5 h-3.5 text-[#111111]" />}
         >
-          {currentRole === 'student' ? 'Switch to Staff Portal' : 'Switch to Student View'}
+          {isStudent ? 'Switch to Counselor Portal' : 'Switch to Student Portal'}
         </Button>
       </div>
 
@@ -123,9 +131,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         <div
           className="w-8 h-8 rounded-full bg-[#FFD84D] border border-[#FFC928] flex items-center justify-center font-bold text-xs text-[#111111] shadow-xs uppercase"
-          title={`Logged in as ${currentUser?.name || currentRole}`}
+          title={`Logged in as ${displayName} (${isStudent ? 'Student Space' : 'Counselor Portal'})`}
         >
-          {currentUser?.name ? currentUser.name[0] : currentRole === 'student' ? 'A' : 'C'}
+          {displayName ? displayName[0] : isStudent ? 'A' : 'R'}
         </div>
 
         {onLogout && (

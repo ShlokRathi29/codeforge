@@ -6,10 +6,21 @@ import { Navbar } from './components/layout/Navbar'
 import { StudentDashboardView } from './components/views/StudentDashboardView'
 import { DailyCheckinView } from './components/views/DailyCheckinView'
 import { HistoryView } from './components/views/HistoryView'
-import { StaffDashboardView } from './components/views/StaffDashboardView'
+import { StaffDashboardView, type StaffTab } from './components/views/StaffDashboardView'
 import { SettingsView } from './components/views/SettingsView'
+import { InsightsView } from './components/views/InsightsView'
+import { ProfilePrivacyView } from './components/views/ProfilePrivacyView'
 import { demoLogin } from './api/client'
 import type { NavSection, UserRole, User } from './types'
+
+const STUDENT_SECTIONS: NavSection[] = ['dashboard', 'checkin', 'insights', 'history', 'profile']
+const STAFF_SECTIONS: NavSection[] = [
+  'staff',
+  'staff-insights',
+  'staff-students',
+  'staff-privacy',
+  'settings',
+]
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
@@ -26,6 +37,16 @@ export function App() {
     setTimeout(() => setToastMessage(null), 3500)
   }
 
+  // Strict route sanitizer ensuring student cannot view staff routes and vice-versa
+  const currentActiveSection: NavSection =
+    currentRole === 'student'
+      ? STUDENT_SECTIONS.includes(activeSection)
+        ? activeSection
+        : 'dashboard'
+      : STAFF_SECTIONS.includes(activeSection)
+      ? activeSection
+      : 'staff'
+
   // Open Auth Modal
   const handleOpenAuth = (role: UserRole = 'student') => {
     setAuthDefaultRole(role)
@@ -39,28 +60,38 @@ export function App() {
     setIsAuthenticated(true)
     setIsAuthModalOpen(false)
     setActiveSection(role === 'staff' ? 'staff' : 'dashboard')
-    showToast(`Welcome back, ${user.name || (role === 'staff' ? 'Dr. Aris Thorne' : 'Atharva Dev')}!`)
+    showToast(
+      `Welcome back, ${user.name || (role === 'staff' ? 'Dr. Radhika Sharma' : 'Atharva Dev')}!`
+    )
   }
 
   // Handle one-click quick demo login from landing page
   const handleQuickDemo = async (role: UserRole) => {
+    // Set immediate synchronous session to prevent role or user mismatch flicker
+    setCurrentRole(role)
+    setCurrentUser({
+      id: role === 'staff' ? 'usr-staff-01' : 'usr-student-01',
+      name: role === 'staff' ? 'Dr. Radhika Sharma' : 'Atharva Dev',
+      email: role === 'staff' ? 'staff@codeforge.local' : 'student@codeforge.local',
+      role,
+    })
+    setIsAuthenticated(true)
+    setActiveSection(role === 'staff' ? 'staff' : 'dashboard')
+
     try {
       const res = await demoLogin(role)
-      setCurrentUser(res.user)
-      setCurrentRole(role)
-      setIsAuthenticated(true)
-      setActiveSection(role === 'staff' ? 'staff' : 'dashboard')
+      if (res?.user) setCurrentUser(res.user)
       showToast(
         role === 'staff'
-          ? '🛡️ Counselor Command Center active (Dr. Aris Thorne)'
+          ? '🛡️ Counselor Command Center active (Dr. Radhika Sharma)'
           : '🎓 Student Portal active (Atharva Dev)'
       )
     } catch {
-      showToast('Connecting to demo account...')
-      // Fallback local session
-      setCurrentRole(role)
-      setIsAuthenticated(true)
-      setActiveSection(role === 'staff' ? 'staff' : 'dashboard')
+      showToast(
+        role === 'staff'
+          ? '🛡️ Counselor Command Center active'
+          : '🎓 Student Portal active'
+      )
     }
   }
 
@@ -76,15 +107,31 @@ export function App() {
   const handleToggleRole = () => {
     const nextRole: UserRole = currentRole === 'student' ? 'staff' : 'student'
     setCurrentRole(nextRole)
-    demoLogin(nextRole).then((res) => {
-      if (res?.user) setCurrentUser(res.user)
-      showToast(
-        nextRole === 'staff'
-          ? 'Switched to Counselor Portal (Dr. Aris Thorne)'
-          : 'Switched to Student Portal (Atharva Dev)'
-      )
-      setActiveSection(nextRole === 'staff' ? 'staff' : 'dashboard')
+    // Synchronously set matching user to guarantee zero mismatch
+    setCurrentUser({
+      id: nextRole === 'staff' ? 'usr-staff-01' : 'usr-student-01',
+      name: nextRole === 'staff' ? 'Dr. Radhika Sharma' : 'Atharva Dev',
+      email: nextRole === 'staff' ? 'staff@codeforge.local' : 'student@codeforge.local',
+      role: nextRole,
     })
+    setActiveSection(nextRole === 'staff' ? 'staff' : 'dashboard')
+
+    demoLogin(nextRole)
+      .then((res) => {
+        if (res?.user) setCurrentUser(res.user)
+        showToast(
+          nextRole === 'staff'
+            ? 'Switched to Counselor Portal (Dr. Radhika Sharma)'
+            : 'Switched to Student Portal (Atharva Dev)'
+        )
+      })
+      .catch(() => {
+        showToast(
+          nextRole === 'staff'
+            ? 'Switched to Counselor Portal'
+            : 'Switched to Student Portal'
+        )
+      })
   }
 
   const handleSeedComplete = () => {
@@ -92,7 +139,22 @@ export function App() {
     setRefreshKey((k) => k + 1)
   }
 
-  // If unauthenticated: Display High-Converting Venture Startup Landing Page
+  // Helper to map staff nav section to staff tab
+  const getStaffTab = (section: NavSection): StaffTab => {
+    if (section === 'staff-insights') return 'insights'
+    if (section === 'staff-students') return 'students'
+    if (section === 'staff-privacy') return 'privacy'
+    return 'alerts'
+  }
+
+  const handleStaffTabChange = (tab: StaffTab) => {
+    if (tab === 'alerts') setActiveSection('staff')
+    else if (tab === 'insights') setActiveSection('staff-insights')
+    else if (tab === 'students') setActiveSection('staff-students')
+    else if (tab === 'privacy') setActiveSection('staff-privacy')
+  }
+
+  // If unauthenticated: Display Venture Startup Landing Page
   if (!isAuthenticated) {
     return (
       <>
@@ -119,7 +181,7 @@ export function App() {
     )
   }
 
-  // If authenticated: Display Protected Portal (Student or Counselor)
+  // If authenticated: Display Protected Portal (Student or Counselor strictly isolated)
   return (
     <div className="flex min-h-screen bg-[#F8FCFF] text-[#111111] selection:bg-[#FFD84D] selection:text-[#111111]">
       {/* Toast Notification Banner */}
@@ -132,9 +194,10 @@ export function App() {
 
       {/* Main Sidebar */}
       <Sidebar
-        activeSection={activeSection}
+        activeSection={currentActiveSection}
         setActiveSection={setActiveSection}
         currentRole={currentRole}
+        onToggleRole={handleToggleRole}
       />
 
       {/* Content wrapper */}
@@ -148,22 +211,35 @@ export function App() {
         />
 
         <main className="flex-1 p-6 sm:p-8 overflow-y-auto" key={refreshKey}>
-          {activeSection === 'dashboard' && (
+          {currentActiveSection === 'dashboard' && (
             <StudentDashboardView onNavigate={setActiveSection} />
           )}
-          {activeSection === 'checkin' && (
+          {currentActiveSection === 'checkin' && (
             <DailyCheckinView
               onCheckinSuccess={() => {
                 showToast('Check-in saved successfully! Streak updated.')
-                setActiveSection('dashboard')
                 setRefreshKey((k) => k + 1)
               }}
               onNavigate={setActiveSection}
             />
           )}
-          {activeSection === 'history' && <HistoryView />}
-          {activeSection === 'staff' && <StaffDashboardView />}
-          {activeSection === 'settings' && <SettingsView />}
+          {currentActiveSection === 'insights' && (
+            <InsightsView onNavigate={setActiveSection} />
+          )}
+          {currentActiveSection === 'history' && <HistoryView />}
+          {currentActiveSection === 'profile' && (
+            <ProfilePrivacyView currentUser={currentUser} />
+          )}
+          {(currentActiveSection === 'staff' ||
+            currentActiveSection === 'staff-insights' ||
+            currentActiveSection === 'staff-students' ||
+            currentActiveSection === 'staff-privacy') && (
+            <StaffDashboardView
+              initialTab={getStaffTab(currentActiveSection)}
+              onTabChange={handleStaffTabChange}
+            />
+          )}
+          {currentActiveSection === 'settings' && <SettingsView />}
         </main>
       </div>
 

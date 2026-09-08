@@ -85,7 +85,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       onAuthSuccess(
         {
           ...res.user,
-          name: name || (selectedRole === 'student' ? 'Atharva Dev' : 'Dr. Aris Thorne'),
+          name: name || (selectedRole === 'student' ? 'Atharva Dev' : 'Dr. Radhika Sharma'),
           email: email || res.user.email,
         },
         selectedRole
@@ -207,7 +207,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <div className="flex items-center gap-2.5">
               <ShieldCheck className="w-4 h-4 text-[#111111]" />
               <div>
-                <div className="font-semibold text-[#111111]">Counselor Demo: Dr. Aris Thorne</div>
+                <div className="font-semibold text-[#111111]">Counselor Demo: Dr. Radhika Sharma</div>
                 <div className="text-[10px] text-slate-600">View support signals (Zero student notes visible)</div>
               </div>
             </div>

@@ -1,4 +1,14 @@
-export type NavSection = 'dashboard' | 'checkin' | 'history' | 'staff' | 'settings'
+export type NavSection =
+  | 'dashboard'
+  | 'checkin'
+  | 'insights'
+  | 'history'
+  | 'profile'
+  | 'staff'
+  | 'staff-insights'
+  | 'staff-students'
+  | 'staff-privacy'
+  | 'settings'
 
 export type UserRole = 'student' | 'staff'
 
