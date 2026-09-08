@@ -1,0 +1,41 @@
+services:
+  # 1. Backend Web Service (FastAPI + SQLite + Uvicorn)
+  - type: web
+    name: codeforge-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: "pip install uv && uv sync --no-dev"
+    startCommand: "uv run uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: ENVIRONMENT
+        value: production
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: DATABASE_URL
+        value: sqlite:///./hackathon.db
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SARVAM_API_KEY
+        sync: false
+      - key: DEFAULT_LLM_PROVIDER
+        value: auto
+
+  # 2. Frontend Web Service (React + Vite SPA)
+  - type: web
+    name: codeforge-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: codeforge-backend
+          property: host
