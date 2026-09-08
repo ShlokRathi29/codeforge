@@ -1,25 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Globe,
   Users,
   GraduationCap,
   RefreshCw,
   Lock,
+  LogOut,
 } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { getHealthStatus, seedDemoData, API_BASE_URL } from '../../api/client'
-import type { UserRole } from '../../types'
+import type { User, UserRole } from '../../types'
 
 interface NavbarProps {
   currentRole: UserRole
+  currentUser?: User | null
   onToggleRole: () => void
   onSeedComplete: () => void
+  onLogout?: () => void
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentRole,
+  currentUser,
   onToggleRole,
   onSeedComplete,
+  onLogout,
 }) => {
   const [isBackendOnline, setIsBackendOnline] = useState<boolean | null>(null)
   const [isSeeding, setIsSeeding] = useState(false)
@@ -64,12 +69,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           {currentRole === 'student' ? (
             <>
               <GraduationCap className="w-4 h-4 text-indigo-400" />
-              <span>Student View: Atharva Dev</span>
+              <span>Student View: {currentUser?.name || 'Atharva Dev'}</span>
             </>
           ) : (
             <>
               <Lock className="w-3.5 h-3.5 text-rose-400" />
-              <span>Counselor Portal: Dr. Aris Thorne</span>
+              <span>Counselor Portal: {currentUser?.name || 'Dr. Aris Thorne'}</span>
             </>
           )}
         </div>
@@ -116,9 +121,23 @@ export const Navbar: React.FC<NavbarProps> = ({
           </span>
         </a>
 
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-xs text-white shadow-md">
-          {currentRole === 'student' ? 'A' : 'C'}
+        <div
+          className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-xs text-white shadow-md uppercase"
+          title={`Logged in as ${currentUser?.name || currentRole}`}
+        >
+          {currentUser?.name ? currentUser.name[0] : currentRole === 'student' ? 'A' : 'C'}
         </div>
+
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            title="Exit to Landing Page / Sign Out"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 rounded-xl border border-slate-800 transition cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Exit</span>
+          </button>
+        )}
       </div>
     </header>
   )
