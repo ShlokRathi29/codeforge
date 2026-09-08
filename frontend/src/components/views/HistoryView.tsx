@@ -65,8 +65,8 @@ export const HistoryView: React.FC = () => {
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white">Check-in History & Logs</h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <h2 className="text-2xl font-bold text-[#111111]">Check-in History & Logs</h2>
+          <p className="text-xs text-slate-500 mt-1">
             Search, filter, and inspect your past reflections and stress patterns across any timeframe.
           </p>
         </div>
@@ -81,10 +81,10 @@ export const HistoryView: React.FC = () => {
               <button
                 key={preset}
                 onClick={() => handlePresetFilter(preset)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   activeFilter === preset
-                    ? 'bg-indigo-600 text-white shadow'
-                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    ? 'bg-[#FFD84D] text-[#111111] shadow-xs'
+                    : 'bg-[#DFF4FF] text-[#111111] hover:bg-[#BFEAFF]'
                 }`}
               >
                 {preset === 'all' ? 'All Logs' : preset === '7d' ? 'Last 7 Days' : 'Last 30 Days'}
@@ -101,20 +101,20 @@ export const HistoryView: React.FC = () => {
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleApplyFilter()}
               placeholder="Search private notes..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-white border border-[#BFEAFF] rounded-lg pl-8 pr-3 py-1.5 text-xs text-[#111111] placeholder:text-slate-400 focus:outline-none focus:border-[#FFD84D]"
             />
           </div>
         </div>
 
         {/* Custom Date Pickers */}
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-800/80 text-xs text-slate-400">
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[#DFF4FF] text-xs text-slate-600">
           <div className="flex items-center gap-2">
             <span>From:</span>
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 text-xs focus:outline-none focus:border-indigo-500"
+              className="bg-white border border-[#BFEAFF] rounded-lg px-2.5 py-1 text-[#111111] text-xs focus:outline-none focus:border-[#FFD84D]"
             />
           </div>
 
@@ -124,7 +124,7 @@ export const HistoryView: React.FC = () => {
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 text-xs focus:outline-none focus:border-indigo-500"
+              className="bg-white border border-[#BFEAFF] rounded-lg px-2.5 py-1 text-[#111111] text-xs focus:outline-none focus:border-[#FFD84D]"
             />
           </div>
 
@@ -137,9 +137,9 @@ export const HistoryView: React.FC = () => {
       {/* History Timeline */}
       <div className="space-y-3">
         {isLoading ? (
-          <div className="py-12 text-center text-xs text-slate-400">Loading check-in history...</div>
+          <div className="py-12 text-center text-xs text-slate-500">Loading check-in history...</div>
         ) : checkins.length === 0 ? (
-          <Card className="py-12 text-center text-xs text-slate-400">
+          <Card className="py-12 text-center text-xs text-slate-500">
             No check-in entries found for the selected date range.
           </Card>
         ) : (
@@ -148,28 +148,28 @@ export const HistoryView: React.FC = () => {
             return (
               <Card
                 key={entry.id}
-                className={`p-5 transition hover:border-slate-700 ${
-                  isHighStress ? 'border-rose-500/20 bg-rose-950/5' : ''
+                className={`p-5 transition hover:border-[#8ED8FF] ${
+                  isHighStress ? 'border-rose-200 bg-rose-50/30' : ''
                 }`}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3.5">
-                    <span className="text-3xl p-2 bg-slate-950 rounded-xl border border-slate-800">
+                    <span className="text-3xl p-2 bg-[#F8FCFF] rounded-xl border border-[#BFEAFF]">
                       {moodEmojis[entry.mood] || '😐'}
                     </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-white">{entry.date}</span>
+                        <span className="font-semibold text-sm text-[#111111]">{entry.date}</span>
                         <Badge variant={entry.stress_level >= 4 ? 'error' : entry.stress_level >= 3 ? 'warning' : 'success'}>
                           Stress {entry.stress_level} / 5
                         </Badge>
                         {isHighStress && (
-                          <span className="text-[10px] bg-rose-500/15 text-rose-300 px-2 py-0.5 rounded-full font-medium border border-rose-500/30">
+                          <span className="text-[10px] bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-semibold border border-rose-200">
                             Elevated Stress
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                      <div className="flex items-center gap-3 text-xs text-slate-600 mt-1">
                         <span className="capitalize">Mood: {entry.mood.replace('_', ' ')}</span>
                         {entry.sleep_quality && (
                           <span>• Sleep: {entry.sleep_quality === 3 ? 'Good 😊' : entry.sleep_quality === 2 ? 'Okay 😐' : 'Poor 😴'}</span>
@@ -184,8 +184,8 @@ export const HistoryView: React.FC = () => {
 
                 {/* Private reflection note */}
                 {entry.private_note && (
-                  <div className="mt-3.5 pt-3 border-t border-slate-800/80 flex items-start gap-2 text-xs text-slate-300">
-                    <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <div className="mt-3.5 pt-3 border-t border-[#DFF4FF] flex items-start gap-2 text-xs text-slate-700">
+                    <Lock className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
                     <p className="italic leading-relaxed">"{entry.private_note}"</p>
                   </div>
                 )}

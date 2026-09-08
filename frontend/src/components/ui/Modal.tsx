@@ -34,18 +34,18 @@ export const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111111]/50 backdrop-blur-xs animate-in fade-in duration-200">
       <div
         className={cn(
-          'w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden',
+          'w-full max-w-lg bg-white border border-[#BFEAFF] rounded-2xl shadow-xl overflow-hidden',
           className
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h3 className="text-lg font-semibold text-slate-100">{title}</h3>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#DFF4FF]">
+          <h3 className="text-lg font-semibold text-[#111111]">{title}</h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
+            className="p-1 rounded-md text-slate-500 hover:text-[#111111] hover:bg-[#DFF4FF]/50 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>

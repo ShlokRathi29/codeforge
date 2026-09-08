@@ -41,8 +41,8 @@ export const SettingsView: React.FC = () => {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-slate-100">Project Configuration</h2>
-        <p className="text-xs text-slate-400 mt-1">
+        <h2 className="text-xl font-bold text-[#111111]">Project Configuration</h2>
+        <p className="text-xs text-slate-500 mt-1">
           Manage API gateways, backend connections, and demo mode parameters
         </p>
       </div>
@@ -50,7 +50,7 @@ export const SettingsView: React.FC = () => {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Server className="w-4 h-4 text-indigo-400" />
+            <Server className="w-4 h-4 text-[#111111]" />
             <CardTitle>Backend Integration Endpoint</CardTitle>
           </div>
         </CardHeader>
@@ -63,13 +63,13 @@ export const SettingsView: React.FC = () => {
             helperText="Currently pointing to hosted backend on Render"
           />
 
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs flex items-center justify-between">
-            <span className="text-slate-400">Documentation Swagger</span>
+          <div className="p-3 rounded-lg bg-[#F8FCFF] border border-[#BFEAFF] text-xs flex items-center justify-between">
+            <span className="text-slate-600 font-medium">Documentation Swagger</span>
             <a
               href={`${backendUrl}/docs`}
               target="_blank"
               rel="noreferrer"
-              className="text-indigo-400 hover:text-indigo-300 font-mono underline"
+              className="text-[#111111] hover:text-black font-semibold font-mono underline"
             >
               {backendUrl}/docs
             </a>
@@ -81,19 +81,19 @@ export const SettingsView: React.FC = () => {
               size="sm"
               onClick={handleTestConnection}
               isLoading={isTesting}
-              leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
+              leftIcon={<RefreshCw className="w-3.5 h-3.5 text-[#111111]" />}
             >
               Test Endpoint Handshake
             </Button>
             {testResult === 'success' && (
-              <span className="text-xs text-emerald-400 flex items-center gap-1.5 font-medium">
-                <CheckCircle className="w-4 h-4" /> 200 OK Handshake established
-                {latency && <span className="text-slate-400 font-mono">({latency}ms)</span>}
+              <span className="text-xs text-emerald-700 flex items-center gap-1.5 font-medium">
+                <CheckCircle className="w-4 h-4 text-emerald-700" /> 200 OK Handshake established
+                {latency && <span className="text-slate-500 font-mono">({latency}ms)</span>}
               </span>
             )}
             {testResult === 'fail' && (
-              <span className="text-xs text-rose-400 flex items-center gap-1.5 font-medium">
-                <AlertCircle className="w-4 h-4" /> Failed to reach host
+              <span className="text-xs text-rose-700 flex items-center gap-1.5 font-medium">
+                <AlertCircle className="w-4 h-4 text-rose-700" /> Failed to reach host
               </span>
             )}
           </div>
@@ -103,7 +103,7 @@ export const SettingsView: React.FC = () => {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Key className="w-4 h-4 text-indigo-400" />
+            <Key className="w-4 h-4 text-[#111111]" />
             <CardTitle>Security & API Credentials</CardTitle>
           </div>
         </CardHeader>

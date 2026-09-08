@@ -21,18 +21,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   currentRole,
 }) => {
   return (
-    <aside className="w-64 border-r border-slate-800 bg-slate-950 flex flex-col justify-between shrink-0 h-screen sticky top-0">
+    <aside className="w-64 border-r border-[#BFEAFF]/60 bg-white flex flex-col justify-between shrink-0 h-screen sticky top-0">
       <div className="p-5">
         {/* Brand Logo */}
         <div className="flex items-center gap-3 px-2 mb-8">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-rose-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <Heart className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-xl bg-[#FFD84D] border border-[#FFC928] flex items-center justify-center shadow-xs">
+            <Heart className="w-5 h-5 text-[#111111]" />
           </div>
           <div>
-            <h1 className="font-bold text-slate-100 text-base tracking-tight leading-none">
+            <h1 className="font-bold text-[#111111] text-base tracking-tight leading-none">
               WellTrack
             </h1>
-            <p className="text-[11px] text-indigo-400 font-medium tracking-wide uppercase mt-1">
+            <p className="text-[11px] text-slate-500 font-semibold tracking-wide uppercase mt-1">
               Mood & Stress Tracker
             </p>
           </div>
@@ -40,7 +40,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Navigation list */}
         <nav className="space-y-1.5">
-          <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase px-3 mb-2">
+          <div className="text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 mb-2">
             Student Wellness
           </div>
 
@@ -49,12 +49,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className={cn(
               'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer text-left',
               activeSection === 'dashboard'
-                ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                ? 'bg-[#DFF4FF] text-[#111111] font-semibold border border-[#BFEAFF]'
+                : 'text-slate-600 hover:text-[#111111] hover:bg-[#F8FCFF]'
             )}
           >
             <div className="flex items-center gap-3">
-              <LayoutDashboard className="w-4 h-4 text-indigo-400" />
+              <LayoutDashboard className="w-4 h-4 text-[#111111]" />
               <span>Dashboard & Trends</span>
             </div>
           </button>
@@ -64,15 +64,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className={cn(
               'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer text-left',
               activeSection === 'checkin'
-                ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                ? 'bg-[#DFF4FF] text-[#111111] font-semibold border border-[#BFEAFF]'
+                : 'text-slate-600 hover:text-[#111111] hover:bg-[#F8FCFF]'
             )}
           >
             <div className="flex items-center gap-3">
-              <Heart className="w-4 h-4 text-rose-400" />
+              <Heart className="w-4 h-4 text-rose-500" />
               <span>Daily Check-in</span>
             </div>
-            <span className="text-[10px] font-semibold bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full border border-rose-500/30">
+            <span className="text-[10px] font-semibold bg-[#FFD84D]/40 text-[#111111] px-2 py-0.5 rounded-full border border-[#FFD84D]">
               60s
             </span>
           </button>
@@ -82,17 +82,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className={cn(
               'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer text-left',
               activeSection === 'history'
-                ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                ? 'bg-[#DFF4FF] text-[#111111] font-semibold border border-[#BFEAFF]'
+                : 'text-slate-600 hover:text-[#111111] hover:bg-[#F8FCFF]'
             )}
           >
             <div className="flex items-center gap-3">
-              <Calendar className="w-4 h-4 text-emerald-400" />
+              <Calendar className="w-4 h-4 text-emerald-600" />
               <span>History & Filter</span>
             </div>
           </button>
 
-          <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase px-3 pt-5 mb-2">
+          <div className="text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 pt-5 mb-2">
             Campus Staff & Admin
           </div>
 
@@ -101,20 +101,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className={cn(
               'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer text-left',
               activeSection === 'staff'
-                ? 'bg-rose-950/40 text-rose-300 border border-rose-500/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                ? 'bg-[#FFF4D9] text-[#111111] font-semibold border border-[#FFD84D]/60'
+                : 'text-slate-600 hover:text-[#111111] hover:bg-[#F8FCFF]'
             )}
           >
             <div className="flex items-center gap-3">
-              <ShieldAlert className="w-4 h-4 text-rose-400" />
+              <ShieldAlert className="w-4 h-4 text-rose-500" />
               <span>Support Signals</span>
             </div>
-            <span className="text-[10px] font-semibold bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-semibold bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded border border-rose-200">
               3-Day Flag
             </span>
           </button>
 
-          <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase px-3 pt-5 mb-2">
+          <div className="text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 pt-5 mb-2">
             System
           </div>
 
@@ -123,12 +123,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className={cn(
               'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer text-left',
               activeSection === 'settings'
-                ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                ? 'bg-[#DFF4FF] text-[#111111] font-semibold border border-[#BFEAFF]'
+                : 'text-slate-600 hover:text-[#111111] hover:bg-[#F8FCFF]'
             )}
           >
             <div className="flex items-center gap-3">
-              <Sliders className="w-4 h-4 text-slate-400" />
+              <Sliders className="w-4 h-4 text-slate-500" />
               <span>API Configuration</span>
             </div>
           </button>
@@ -136,15 +136,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Bottom info widget */}
-      <div className="p-4 border-t border-slate-900">
-        <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+      <div className="p-4 border-t border-[#BFEAFF]/60">
+        <div className="p-3.5 rounded-xl bg-[#F8FCFF] border border-[#BFEAFF]/60 space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-200 capitalize">{currentRole} Session</span>
-            <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-mono">
+            <span className="text-xs font-semibold text-[#111111] capitalize">{currentRole} Session</span>
+            <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded font-mono font-semibold">
               Privacy Mode
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed">
+          <p className="text-[11px] text-slate-600 leading-relaxed">
             Private notes are strictly isolated and never shown on staff pages.
           </p>
         </div>

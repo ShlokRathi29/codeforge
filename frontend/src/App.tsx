@@ -98,7 +98,7 @@ export function App() {
       <>
         {/* Toast Notification Banner */}
         {toastMessage && (
-          <div className="fixed bottom-6 right-6 z-50 bg-indigo-600 text-white px-4 py-2.5 rounded-xl shadow-2xl border border-indigo-400/30 text-xs font-semibold flex items-center gap-2 animate-bounce">
+          <div className="fixed bottom-6 right-6 z-50 bg-[#111111] text-white px-4 py-2.5 rounded-xl shadow-xl border border-[#1A1A1A] text-xs font-semibold flex items-center gap-2">
             <span>🔔</span>
             <span>{toastMessage}</span>
           </div>
@@ -121,10 +121,10 @@ export function App() {
 
   // If authenticated: Display Protected Portal (Student or Counselor)
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-600 selection:text-white">
+    <div className="flex min-h-screen bg-[#F8FCFF] text-[#111111] selection:bg-[#FFD84D] selection:text-[#111111]">
       {/* Toast Notification Banner */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-indigo-600 text-white px-4 py-2.5 rounded-xl shadow-2xl border border-indigo-400/30 text-xs font-semibold flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#111111] text-white px-4 py-2.5 rounded-xl shadow-xl border border-[#1A1A1A] text-xs font-semibold flex items-center gap-2">
           <span>🔔</span>
           <span>{toastMessage}</span>
         </div>

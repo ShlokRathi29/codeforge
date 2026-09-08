@@ -49,7 +49,7 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
   const stressLevels = [
     { level: 1, label: '1 - Very Low', desc: 'Completely relaxed', color: 'border-emerald-500/40 hover:border-emerald-500' },
     { level: 2, label: '2 - Mild', desc: 'Easy to manage', color: 'border-teal-500/40 hover:border-teal-500' },
-    { level: 3, label: '3 - Moderate', desc: 'Noticeable pressure', color: 'border-indigo-500/40 hover:border-indigo-500' },
+    { level: 3, label: '3 - Moderate', desc: 'Noticeable pressure', color: 'border-[#8ED8FF] hover:border-[#111111]' },
     { level: 4, label: '4 - High', desc: 'Anxious / Strained (Flag alert)', color: 'border-amber-500/50 hover:border-amber-500' },
     { level: 5, label: '5 - Severe', desc: 'Overwhelmed / Peak stress', color: 'border-rose-500/60 hover:border-rose-500' },
   ]
@@ -100,11 +100,11 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
   if (submitted) {
     return (
       <div className="max-w-xl mx-auto py-16 text-center space-y-4">
-        <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto border border-emerald-500/30 animate-bounce">
+        <div className="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center mx-auto border border-emerald-200 animate-bounce">
           <CheckCircle className="w-8 h-8" />
         </div>
-        <h2 className="text-2xl font-bold text-white">Daily Check-in Recorded!</h2>
-        <p className="text-sm text-slate-300">
+        <h2 className="text-2xl font-bold text-[#111111]">Daily Check-in Recorded!</h2>
+        <p className="text-sm text-slate-600">
           Your mood and stress levels have been securely logged. Your 7-day trend graphs and personal insights have been updated.
         </p>
         <div className="pt-4">
@@ -119,14 +119,14 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Daily Mood & Stress Check-in</h2>
-        <p className="text-xs text-slate-400 mt-1">
+        <h2 className="text-2xl font-bold text-[#111111]">Daily Mood & Stress Check-in</h2>
+        <p className="text-xs text-slate-500 mt-1">
           Take 60 seconds to reflect on your day. Your logs help identify patterns before burnout occurs.
         </p>
       </div>
 
       {errorMsg && (
-        <div className="p-3 bg-rose-950/40 border border-rose-500/40 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+        <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
@@ -136,8 +136,8 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
         {/* Date Selection */}
         <Card className="p-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-semibold text-white">
-              <Calendar className="w-4 h-4 text-indigo-400" />
+            <div className="flex items-center gap-2 text-sm font-semibold text-[#111111]">
+              <Calendar className="w-4 h-4 text-[#111111]" />
               <span>Check-in Date</span>
             </div>
             <input
@@ -145,7 +145,7 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
               value={date}
               onChange={(e) => setDate(e.target.value)}
               max={today}
-              className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+              className="bg-white border border-[#BFEAFF] rounded-lg px-3 py-1.5 text-xs text-[#111111] focus:outline-none focus:border-[#FFD84D]"
             />
           </div>
         </Card>
@@ -153,11 +153,11 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
         {/* 1. Mood Selection */}
         <Card className="p-5 space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-semibold text-white flex items-center gap-2">
-              <Smile className="w-4 h-4 text-indigo-400" />
+            <label className="text-sm font-semibold text-[#111111] flex items-center gap-2">
+              <Smile className="w-4 h-4 text-[#111111]" />
               <span>1. How are you feeling today?</span>
             </label>
-            <span className="text-xs text-slate-400">Select one</span>
+            <span className="text-xs text-slate-500">Select one</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
@@ -168,8 +168,8 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
                 onClick={() => setMood(opt.id as any)}
                 className={`p-3.5 rounded-xl border text-center transition cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
                   mood === opt.id
-                    ? 'bg-indigo-600/20 border-indigo-500 text-white shadow-md'
-                    : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                    ? 'bg-[#DFF4FF] border-2 border-[#8ED8FF] text-[#111111] shadow-xs'
+                    : 'bg-[#F8FCFF] border-[#BFEAFF]/70 text-slate-600 hover:border-[#8ED8FF] hover:text-[#111111]'
                 }`}
               >
                 <span className="text-3xl">{opt.emoji}</span>
@@ -183,11 +183,11 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
         {/* 2. Stress Level (1 to 5) */}
         <Card className="p-5 space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-semibold text-white flex items-center gap-2">
-              <Heart className="w-4 h-4 text-rose-400" />
+            <label className="text-sm font-semibold text-[#111111] flex items-center gap-2">
+              <Heart className="w-4 h-4 text-rose-500" />
               <span>2. Current Stress Level (1 to 5)</span>
             </label>
-            <span className={`text-xs font-bold ${stressLevel >= 4 ? 'text-rose-400' : 'text-indigo-400'}`}>
+            <span className={`text-xs font-bold ${stressLevel >= 4 ? 'text-rose-700' : 'text-[#111111]'}`}>
               Level {stressLevel} of 5
             </span>
           </div>
@@ -201,26 +201,26 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
                 className={`p-3 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
                   stressLevel === lvl.level
                     ? lvl.level >= 4
-                      ? 'bg-rose-950/30 border-rose-500 text-white shadow-md'
-                      : 'bg-indigo-600/20 border-indigo-500 text-white shadow-md'
-                    : `bg-slate-950/60 ${lvl.color} text-slate-400 hover:text-slate-200`
+                      ? 'bg-[#FFF4D9] border-2 border-[#FFD84D] text-[#111111] shadow-xs'
+                      : 'bg-[#DFF4FF] border-2 border-[#8ED8FF] text-[#111111] shadow-xs'
+                    : 'bg-[#F8FCFF] border-[#BFEAFF]/70 text-slate-600 hover:border-[#8ED8FF] hover:text-[#111111]'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold">{lvl.level}</span>
                   {lvl.level >= 4 && (
-                    <span className="text-[9px] font-semibold bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded">
+                    <span className="text-[9px] font-semibold bg-rose-100 text-rose-700 border border-rose-200 px-1.5 py-0.5 rounded">
                       Elevated
                     </span>
                   )}
                 </div>
-                <div className="text-[11px] font-medium text-slate-300 mt-1">{lvl.desc}</div>
+                <div className="text-[11px] font-medium text-slate-600 mt-1">{lvl.desc}</div>
               </button>
             ))}
           </div>
 
           {stressLevel >= 4 && (
-            <p className="text-[11px] text-amber-300 bg-amber-950/30 border border-amber-500/30 p-2.5 rounded-lg">
+            <p className="text-[11px] text-amber-900 bg-amber-50 border border-amber-200 p-2.5 rounded-lg">
               ⚠️ Reporting stress at 4 or 5 for 3 consecutive days will generate a proactive campus counselor support signal so you don't face it alone.
             </p>
           )}
@@ -229,8 +229,8 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
         {/* 3. Sleep Quality & Academic Pressure */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="p-4 space-y-2.5">
-            <label className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-              <Moon className="w-3.5 h-3.5 text-indigo-400" />
+            <label className="text-xs font-semibold text-[#111111] flex items-center gap-1.5">
+              <Moon className="w-3.5 h-3.5 text-[#111111]" />
               <span>3. How was your sleep?</span>
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -241,8 +241,8 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
                   onClick={() => setSleepQuality(s.level)}
                   className={`py-2 px-2 rounded-lg border text-center text-xs transition cursor-pointer ${
                     sleepQuality === s.level
-                      ? 'bg-indigo-600 text-white border-indigo-500'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      ? 'bg-[#FFD84D] text-[#111111] border-[#FFC928] font-bold shadow-xs'
+                      : 'bg-[#F8FCFF] border-[#BFEAFF] text-slate-600 hover:border-[#8ED8FF]'
                   }`}
                 >
                   <div>{s.emoji}</div>
@@ -254,11 +254,11 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
 
           <Card className="p-4 space-y-2.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+              <label className="text-xs font-semibold text-[#111111] flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-[#111111]" />
                 <span>4. Academic / Exam Pressure</span>
               </label>
-              <span className="text-xs font-mono text-indigo-400">{academicPressure} / 5</span>
+              <span className="text-xs font-mono text-[#111111] font-bold">{academicPressure} / 5</span>
             </div>
             <div className="pt-2">
               <input
@@ -268,7 +268,7 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
                 step="1"
                 value={academicPressure}
                 onChange={(e) => setAcademicPressure(parseInt(e.target.value))}
-                className="w-full accent-indigo-500 cursor-pointer"
+                className="w-full accent-[#111111] cursor-pointer"
               />
               <div className="flex justify-between text-[10px] text-slate-500 mt-1">
                 <span>Light</span>
@@ -280,18 +280,18 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
         </div>
 
         {/* 4. Optional Private Note (Strict Privacy Callout) */}
-        <Card className="p-5 space-y-2.5 border-indigo-500/20">
+        <Card className="p-5 space-y-2.5 border-[#BFEAFF]/70">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-semibold text-white flex items-center gap-2">
-              <Lock className="w-4 h-4 text-emerald-400" />
+            <label className="text-sm font-semibold text-[#111111] flex items-center gap-2">
+              <Lock className="w-4 h-4 text-emerald-700" />
               <span>5. Optional Daily Reflection (Private Note)</span>
             </label>
-            <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-full">
               🔒 100% Confidential
             </span>
           </div>
 
-          <p className="text-[11px] text-slate-400 leading-relaxed">
+          <p className="text-[11px] text-slate-600 leading-relaxed">
             Write down what is on your mind. Per Problem Requirement 07, college counselors and staff
             are strictly prohibited from viewing your private reflections.
           </p>
@@ -301,7 +301,7 @@ export const DailyCheckinView: React.FC<DailyCheckinViewProps> = ({
             value={privateNote}
             onChange={(e) => setPrivateNote(e.target.value)}
             placeholder="e.g., Struggled with algorithm homework, but felt better after talking to my roommate..."
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"
+            className="w-full bg-[#F8FCFF] border border-[#BFEAFF] rounded-xl p-3 text-xs text-[#111111] placeholder:text-slate-400 focus:outline-none focus:border-[#FFD84D] transition"
           />
         </Card>
 

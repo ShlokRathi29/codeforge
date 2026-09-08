@@ -9,7 +9,7 @@ export const Card: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   return (
     <div
       className={cn(
-        'rounded-xl border border-slate-800 bg-slate-900/70 backdrop-blur-sm p-5 shadow-sm hover:border-slate-700/80 transition-all duration-200',
+        'rounded-xl border border-[#BFEAFF]/70 bg-white p-5 shadow-xs hover:border-[#8ED8FF] transition-all duration-200',
         className
       )}
       {...props}
@@ -37,7 +37,7 @@ export const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   ...props
 }) => {
   return (
-    <h3 className={cn('font-semibold text-slate-100 text-lg tracking-tight', className)} {...props}>
+    <h3 className={cn('font-semibold text-[#111111] text-lg tracking-tight', className)} {...props}>
       {children}
     </h3>
   )

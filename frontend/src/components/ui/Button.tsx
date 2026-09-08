@@ -21,14 +21,14 @@ export const Button: React.FC<ButtonProps> = ({
   rightIcon,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50 disabled:pointer-events-none cursor-pointer'
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#FFD84D]/60 disabled:opacity-50 disabled:pointer-events-none cursor-pointer'
 
   const variants = {
-    primary: 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/25 active:scale-[0.98]',
-    secondary: 'bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 active:scale-[0.98]',
-    outline: 'border border-slate-700 hover:border-slate-500 bg-transparent text-slate-200 hover:bg-slate-800/40 active:scale-[0.98]',
-    ghost: 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50',
-    danger: 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/20 active:scale-[0.98]',
+    primary: 'bg-[#FFD84D] hover:bg-[#FFC928] text-[#111111] font-semibold shadow-xs active:scale-[0.98]',
+    secondary: 'bg-[#DFF4FF] hover:bg-[#BFEAFF] text-[#111111] border border-[#BFEAFF] active:scale-[0.98]',
+    outline: 'border border-[#BFEAFF] hover:border-[#8ED8FF] bg-white text-[#111111] hover:bg-[#DFF4FF]/50 active:scale-[0.98]',
+    ghost: 'text-[#111111] hover:text-[#111111] hover:bg-[#DFF4FF]/60',
+    danger: 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 active:scale-[0.98]',
   }
 
   const sizes = {

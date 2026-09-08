@@ -1,22 +1,28 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  server: {
-    proxy: {
-      '/health': {
-        target: 'https://codeforge-zdxk.onrender.com',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/api': {
-        target: 'https://codeforge-zdxk.onrender.com',
-        changeOrigin: true,
-        secure: false,
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const backendTarget = env.VITE_BACKEND_URL || 'http://localhost:8000'
+
+  return {
+    plugins: [react(), tailwindcss()],
+    server: {
+      port: 5173,
+      proxy: {
+        '/health': {
+          target: backendTarget,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/api': {
+          target: backendTarget,
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
-  },
+  }
 })
